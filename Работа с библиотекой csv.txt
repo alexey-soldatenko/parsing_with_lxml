@@ -1,0 +1,87 @@
+CSV (Comma Separated Values) - наиболее распространенный формат для экспорта и импорта электронных таблиц и баз данных. csv модуль включает в себя классы для чтения и записи табличных данных в csv формат. 
+
+csv модуль имеет такие функции:
+
+1. Функция чтения файла 
+csv.reader(csvfile, dialect=’excel’, **fmtparams)
+
+Возвращает объект, который будет перебирать строки в csvfile. Этот объект состоит из списков, представляющих строки.
+
+import csv
+
+with open('test1.csv', 'r') as csvfile:
+	csv_reader = csv.reader(csvfile)
+	for c in csv_reader:
+		print(c)
+
+Результат:
+['title', 'describe', 'date_open', 'link', 'date_close', 'price']
+['Требуется програмист с опытом работы с API социальных сетей (Facebook)', 'Нам необходимо разработать парсер лайков Facebook. \xa0Для сбора и лайков пользователей которые, предварительно соглашаются и открывают доступ к своим данным. Необходимо собрать такие данные:', 'today', '/project/trebuetsya-programist-opyitom-rabotyi/252113.html', '15 сен', 'договорная']
+и т.д.
+
+2. Функция записи в файл
+csv.writer(csvfile, dialect=’excel’, **fmtparams)
+
+Возвращает объект записи в файл. Таким образом запись в файл осуществляется через этот объект.
+
+import csv
+
+rows = [('one', 'two'), ('two', 'three'), ('three', 'four')]
+with open('test2.csv', 'w') as csvfile:
+	csv_writer = csv.writer(csvfile)
+	csv_writer.writerows(rows) - записывает все строки сразу
+
+Результат
+one,two
+two,three
+three,four
+
+Или так:
+import csv
+
+with open('test2.csv', 'w') as csvfile:
+	csv_writer = csv.writer(csvfile)
+	csv_writer.writerow((1, 2, 3, 4))
+	csv_writer.writerow((7, 3, 5, 8, 9))
+
+Результат:
+1,2,3,4
+7,3,5,8,9
+
+Главное, чтобы функции writerows() или writerow() принимали итерируемые параметры!
+
+Очень удобно работать с csv-файлами, записывая и читая из них при помощи словарей. Для этого используются классы DictReader и DictWriter.
+
+1. class csv.DictReader(f, fieldnames=None, restkey=None, restval=None, dialect=’excel’, *args, **kwds)
+
+Пример:
+test2.csv
+'name', 'last_name'
+'Fedor', 'Ivanov'
+'Alexandr', 'Emelin'
+
+import csv
+
+with open('test2.csv', 'r') as csvfile:
+	csv_reader = csv.DictReader(csvfile)
+	for i in csv_reader:
+		print(i) 
+Результат:
+{"'name'": "'Fedor'", " 'last_name'": " 'Ivanov'"}
+{"'name'": "'Alexandr'", " 'last_name'": " 'Emelin'"}
+
+2. class csv.DictWriter(f, fieldnames, restval=”, extrasaction=’raise’, dialect=’excel’, *args, **kwds)
+
+import csv
+
+fields = ['name', 'last_name']
+with open('test2.csv', 'w') as csvfile:
+	writer = csv.DictWriter(csvfile, fieldnames=fields)
+	writer.writeheader() - записывает заголовки
+	writer.writerow({'name':'Vasiliy', 'last_name':'Ivanchuk'})
+	writer.writerow({'name': 'Egor', 'last_name':'Petrov'})
+
+Файл test2.csv:
+name,last_name
+Vasiliy,Ivanchuk
+Egor,Petrov
